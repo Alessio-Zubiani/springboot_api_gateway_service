@@ -1,2 +1,19 @@
 server:
   port: 9000
+  
+spring:
+  application:
+    name: "apigateway-service"
+    
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    urls[0]:
+      name: Product Service
+      url: /aggregate/product-service/v3/api-docs
+    urls[1]:
+      name: Order Service
+      url: /aggregate/order-service/swagger-ui.html
+    urls[2]:
+      name: Inventory Service
+      url: /aggregate/inventory-service/swagger-ui.html
