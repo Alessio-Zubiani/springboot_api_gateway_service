@@ -3,21 +3,55 @@ server:
   
 spring:
   application:
-    name: "apigateway-service"
+    name: "api-gateway-service"
     
 springdoc:
   api-docs:
     enabled: true
-    path: /v3/api-docs
+    path: /gateway-service/v3/api-docs
   swagger-ui:
     enabled: true
-    config-url: /v3/api-docs/swagger-config
+    path: /gateway-service/swagger-ui.html
     urls:
-      - name: Gateway Service
-        url: /v3/api-docs
       - name: Product Service
-        url: /product/v3/api-docs
+        url: /product-service/v3/api-docs
       - name: Order Service
-        url: /order/v3/api-docs
+        url: /order-service/v3/api-docs
       - name: Inventory Service
-        url: /inventory/v3/api-docs
+        url: /inventory-service/v3/api-docs
+
+# Actuator configuration        
+management:
+  health:
+    circuitbreaker:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
+      
+# Resilience4j configuration
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        registerHealthIndicator: true
+        slidingWindowType: COUNT_BASED
+        slidingWindowSize: 10
+        failureRateThreshold: 50
+        waitDurationInOpenState: 5s
+        permittedNumberOfCallsInHalfOpenState: 3
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        minimum-number-of-calls: 5
+  timelimiter:
+    configs:
+      default:
+        timeout-duration: 3s
+  retry:
+    configs:
+      default:
+        max-attempts: 3
+        wait-duration: 2s
